@@ -38,9 +38,9 @@
 #endif
 
 /* LOWLEVEL */
-#define NRF24_TRANSMISSON_OK	0
-#define NRF24_MESSAGE_LOST   	1
-#define NRF24_INVALID_ARGUMENT	2
+#define NRF24_TRANSMISSON_OK  0
+#define NRF24_MESSAGE_LOST    1
+#define NRF24_INVALID_ARGUMENT  2
 
 
 #define NRF24_SPI_MSG_MAX_LEN 32
@@ -61,18 +61,18 @@
 
 typedef struct nrf24xx_msg_s
 {
-	uint8_t addr_from[NRF24_ADDR_LEN];
-	uint8_t payload_size;
-	uint8_t msg_id;
-	uint8_t rx_req;
-	uint8_t msg_buffer[NRF24_BUFFER_PAYLOAD_LEN];
+  uint8_t addr_from[NRF24_ADDR_LEN];
+  uint8_t payload_size;
+  uint8_t msg_id;
+  uint8_t rx_req;
+  uint8_t msg_buffer[NRF24_BUFFER_PAYLOAD_LEN];
 
 } nrf24xx_msg_t;
 
 typedef union nrf24xx_msg_union_s
 {
-	uint8_t raw[NRF24_PAYLOAD_LEN];
-	nrf24xx_msg_t msg;
+  uint8_t raw[NRF24_PAYLOAD_LEN];
+  nrf24xx_msg_t msg;
 
 } nrf24xx_msg_union_t;
 
@@ -101,11 +101,11 @@ typedef struct nrf24xx_s
 }nrf24xx_t;
 
 void nrf24_drv_init(nrf24xx_t *nrf24,
-					void *nrf24_spi,
-					void *spi_transfer_byte,
-					void *spi_transfer_msg,
-					void *nrf24xx_set_ce,
-					void *nrf24_delay_func);
+          void *nrf24_spi,
+          void *spi_transfer_byte,
+          void *spi_transfer_msg,
+          void *nrf24xx_set_ce,
+          void *nrf24_delay_func);
 
 void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length);
 

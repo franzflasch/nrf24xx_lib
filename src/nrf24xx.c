@@ -33,27 +33,27 @@ static void nrf24_transfer_spi(nrf24xx_t *nrf24, uint8_t* dataout, uint8_t* data
 /* Clocks only one byte into the given nrf24 register */
 static void nrf24_write_register(nrf24xx_t *nrf24, uint8_t reg, uint8_t value)
 {
-	nrf24->spi_msg[0] = (NRF24_W_REGISTER | (NRF24_REGISTER_MASK & reg));
-	nrf24->spi_msg[1] = value;
-	nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, 2);
+    nrf24->spi_msg[0] = (NRF24_W_REGISTER | (NRF24_REGISTER_MASK & reg));
+    nrf24->spi_msg[1] = value;
+    nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, 2);
 }
 
 /* Read single register from nrf24 */
 static uint8_t nrf24_read_register_byte(nrf24xx_t *nrf24, uint8_t reg)
 {
-	nrf24->spi_msg[0] = (NRF24_R_REGISTER | (NRF24_REGISTER_MASK & reg));
-	nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, 2);
-	return nrf24->spi_msg[1];
+    nrf24->spi_msg[0] = (NRF24_R_REGISTER | (NRF24_REGISTER_MASK & reg));
+    nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, 2);
+    return nrf24->spi_msg[1];
 }
 
 /* Write to a single register of nrf24 */
 static void nrf24_write_register_burst(nrf24xx_t *nrf24, uint8_t reg, uint8_t *value, uint8_t len)
 {
-	nrf24->spi_msg[0] = (NRF24_W_REGISTER | (NRF24_REGISTER_MASK & reg));
+    nrf24->spi_msg[0] = (NRF24_W_REGISTER | (NRF24_REGISTER_MASK & reg));
 
-	/* copy the message to the spi msg buffer */
-	memcpy(&nrf24->spi_msg[1], value, len);
-	nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, len+1);
+    /* copy the message to the spi msg buffer */
+    memcpy(&nrf24->spi_msg[1], value, len);
+    nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, len+1);
 }
 
 
@@ -73,11 +73,11 @@ static uint8_t nrf24_rx_fifo_empty(nrf24xx_t *nrf24)
 
 /* PUBLIC */
 void nrf24_drv_init(nrf24xx_t *nrf24,
-				void *nrf24_spi,
-				void *spi_transfer_byte,
-				void *spi_transfer_msg,
-				void *nrf24xx_set_ce,
-				void *nrf24_delay_func)
+                void *nrf24_spi,
+                void *spi_transfer_byte,
+                void *spi_transfer_msg,
+                void *nrf24xx_set_ce,
+                void *nrf24_delay_func)
 {
     nrf24->spi = nrf24_spi;
     nrf24->SPI_transfer_byte = spi_transfer_byte;
@@ -187,14 +187,14 @@ uint8_t nrf24_data_ready(nrf24xx_t *nrf24)
 /* Reads payload bytes into data array */
 void nrf24_get_data(nrf24xx_t *nrf24, uint8_t* data)
 {
-	nrf24->spi_msg[0] = NRF24_R_RX_PAYLOAD;
-	memset(&nrf24->spi_msg[1], 0xff, nrf24->payload_len);
-	nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, nrf24->payload_len+1);
+    nrf24->spi_msg[0] = NRF24_R_RX_PAYLOAD;
+    memset(&nrf24->spi_msg[1], 0xff, nrf24->payload_len);
+    nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, nrf24->payload_len+1);
 
-	memcpy(data, &nrf24->spi_msg[1], nrf24->payload_len);
+    memcpy(data, &nrf24->spi_msg[1], nrf24->payload_len);
 
-	/* Reset status register */
-	nrf24_write_register(nrf24, NRF24_STATUS, (1<<NRF24_RX_DR));
+    /* Reset status register */
+    nrf24_write_register(nrf24, NRF24_STATUS, (1<<NRF24_RX_DR));
 }
 
 // Sends a data package to the default address. Be sure to send the correct
@@ -213,11 +213,11 @@ void nrf24_send(nrf24xx_t *nrf24, uint8_t* value)
         nrf24_transfer_spi_byte(nrf24, NRF24_FLUSH_TX);
     #endif
 
-	nrf24->spi_msg[0] = NRF24_W_TX_PAYLOAD;
+    nrf24->spi_msg[0] = NRF24_W_TX_PAYLOAD;
 
-	/* copy the message to the spi msg buffer */
-	memcpy(&nrf24->spi_msg[1], value, nrf24->payload_len);
-	nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, nrf24->payload_len+1);
+    /* copy the message to the spi msg buffer */
+    memcpy(&nrf24->spi_msg[1], value, nrf24->payload_len);
+    nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, nrf24->payload_len+1);
 
     /* Start the transmission */
     nrf24->NRF24XX_set_ce(NRF24_HIGH);
@@ -273,16 +273,16 @@ uint8_t nrf24_last_message_status(nrf24xx_t *nrf24)
 
 void nrf24_clear_irqs(nrf24xx_t *nrf24)
 {
-	nrf24_write_register(nrf24, NRF24_STATUS, (1<<NRF24_RX_DR) | (1<<NRF24_TX_DS) | (1<<NRF24_MAX_RT));
+    nrf24_write_register(nrf24, NRF24_STATUS, (1<<NRF24_RX_DR) | (1<<NRF24_TX_DS) | (1<<NRF24_MAX_RT));
 }
 
 uint8_t nrf24_send_message(nrf24xx_t *nrf24, uint8_t *buf, uint8_t buf_size)
 {
-	uint8_t retries = 0;
-	uint8_t temp;
-	uint8_t message[NRF24_PAYLOAD_LEN];
+    uint8_t retries = 0;
+    uint8_t temp;
+    uint8_t message[NRF24_PAYLOAD_LEN];
 
-	memcpy(message, buf, buf_size);
+    memcpy(message, buf, buf_size);
 
     /* Automatically goes to TX mode */
     nrf24_send(nrf24, message);
@@ -291,10 +291,11 @@ uint8_t nrf24_send_message(nrf24xx_t *nrf24, uint8_t *buf, uint8_t buf_size)
     while(nrf24_is_sending(nrf24))
     {
         //NRF24XX_DEBUG_PRINT("Waiting for sending...\n\r");
-    	if(retries == NRF24_MAX_RETRIES)
-    		return NRF24_MESSAGE_LOST;
-		nrf24->NRF24XX_delay_func(10);
-		retries++;
+        if(retries == NRF24_MAX_RETRIES)
+            return NRF24_MESSAGE_LOST;
+        
+        nrf24->NRF24XX_delay_func(10);
+        retries++;
     }
 
     /* Make analysis on last tranmission attempt */
@@ -315,137 +316,137 @@ uint8_t nrf24_send_message(nrf24xx_t *nrf24, uint8_t *buf, uint8_t buf_size)
 
 static void nrf24_encode_message(nrf24xx_msg_union_t *msg_to_send, uint8_t *rxaddress, uint8_t msg_id, uint8_t *buf, uint8_t buf_size, uint8_t rx_req)
 {
-	/* Encode message */
-	memcpy(msg_to_send->msg.addr_from, rxaddress, NRF24_ADDR_LEN);
+    /* Encode message */
+    memcpy(msg_to_send->msg.addr_from, rxaddress, NRF24_ADDR_LEN);
 
-	if(buf != NULL)
-		memcpy(msg_to_send->msg.msg_buffer, buf, ((buf_size > NRF24_BUFFER_PAYLOAD_LEN) ? NRF24_BUFFER_PAYLOAD_LEN : buf_size));
+    if(buf != NULL)
+        memcpy(msg_to_send->msg.msg_buffer, buf, ((buf_size > NRF24_BUFFER_PAYLOAD_LEN) ? NRF24_BUFFER_PAYLOAD_LEN : buf_size));
 
-	msg_to_send->msg.payload_size = buf_size;
-	msg_to_send->msg.msg_id = msg_id;
-	msg_to_send->msg.rx_req = rx_req;
+    msg_to_send->msg.payload_size = buf_size;
+    msg_to_send->msg.msg_id = msg_id;
+    msg_to_send->msg.rx_req = rx_req;
 }
 
 static void print_message_info(nrf24xx_msg_union_t *msg_to_send)
 {
-	uint8_t i = 0;
+    uint8_t i = 0;
 
-	NRF24XX_DEBUG_PRINT("Address from:");
-	for(i=0;i<NRF24_ADDR_LEN;i++)
-	{
-		NRF24XX_DEBUG_PRINT(" %d", msg_to_send->msg.addr_from[i]);
-	}
-	NRF24XX_DEBUG_PRINT("\r\n");
+    NRF24XX_DEBUG_PRINT("Address from:");
+    for(i=0;i<NRF24_ADDR_LEN;i++)
+    {
+        NRF24XX_DEBUG_PRINT(" %d", msg_to_send->msg.addr_from[i]);
+    }
+    NRF24XX_DEBUG_PRINT("\r\n");
 
-	NRF24XX_DEBUG_PRINT("Message id: %d\r\n", msg_to_send->msg.msg_id);
-	NRF24XX_DEBUG_PRINT("Payload size: %d\r\n", msg_to_send->msg.payload_size);
+    NRF24XX_DEBUG_PRINT("Message id: %d\r\n", msg_to_send->msg.msg_id);
+    NRF24XX_DEBUG_PRINT("Payload size: %d\r\n", msg_to_send->msg.payload_size);
 
-	NRF24XX_DEBUG_PRINT("Msg buf:");
-	for(i=0;i<msg_to_send->msg.payload_size;i++)
-	{
-		NRF24XX_DEBUG_PRINT(" %d", msg_to_send->msg.msg_buffer[i]);
-	}
-	NRF24XX_DEBUG_PRINT("\r\n");
+    NRF24XX_DEBUG_PRINT("Msg buf:");
+    for(i=0;i<msg_to_send->msg.payload_size;i++)
+    {
+        NRF24XX_DEBUG_PRINT(" %d", msg_to_send->msg.msg_buffer[i]);
+    }
+    NRF24XX_DEBUG_PRINT("\r\n");
 
-	NRF24XX_DEBUG_PRINT("rx req: %d\r\n", msg_to_send->msg.rx_req);
+    NRF24XX_DEBUG_PRINT("rx req: %d\r\n", msg_to_send->msg.rx_req);
 }
 
 static void nrf24_prepare_and_send(nrf24xx_t *nrf24, uint8_t *ownaddress, nrf24xx_msg_union_t *msg_to_send, uint8_t *buf_tx, uint8_t buf_size)
 {
-	uint8_t j = 0;
-	uint8_t how_many = 0;
-	uint8_t rest = 0;
+    uint8_t j = 0;
+    uint8_t how_many = 0;
+    uint8_t rest = 0;
 
-	/* packetize the buffer */
-	how_many = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
+    /* packetize the buffer */
+    how_many = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
 
-	if(buf_size>=NRF24_BUFFER_PAYLOAD_LEN)
-	{
-		rest = buf_size%NRF24_BUFFER_PAYLOAD_LEN;
-		if(!rest)
-		{
-			rest=NRF24_BUFFER_PAYLOAD_LEN;
-			how_many--;
-		}
-	}
-	else
-	{
-		rest = buf_size;
-	}
+    if(buf_size>=NRF24_BUFFER_PAYLOAD_LEN)
+    {
+        rest = buf_size%NRF24_BUFFER_PAYLOAD_LEN;
+        if(!rest)
+        {
+            rest=NRF24_BUFFER_PAYLOAD_LEN;
+            how_many--;
+        }
+    }
+    else
+    {
+        rest = buf_size;
+    }
 
-	NRF24XX_DEBUG_PRINT("bufsize: %d how_many: %d rest: %d\n", buf_size, how_many, rest);
+    NRF24XX_DEBUG_PRINT("bufsize: %d how_many: %d rest: %d\n", buf_size, how_many, rest);
 
-	nrf24_encode_message(msg_to_send, ownaddress, how_many, NULL, buf_size, 0);
+    nrf24_encode_message(msg_to_send, ownaddress, how_many, NULL, buf_size, 0);
 
-	nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
-	nrf24_send_message(nrf24, msg_to_send->raw, NRF24_PAYLOAD_LEN);
+    nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
+    nrf24_send_message(nrf24, msg_to_send->raw, NRF24_PAYLOAD_LEN);
 
-	for(j=0;j<how_many;j++)
-	{
-		nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
-		if(j==(how_many-1))
-		{
-			NRF24XX_DEBUG_PRINT("last encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest);
-			nrf24_encode_message(msg_to_send, ownaddress, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest, 0);
-		}
-		else
-		{
-			NRF24XX_DEBUG_PRINT("encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN);
-			nrf24_encode_message(msg_to_send, ownaddress, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN, 0);
-		}
-		nrf24_send_message(nrf24, msg_to_send->raw, NRF24_PAYLOAD_LEN);
-		nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS/2);
-	}
+    for(j=0;j<how_many;j++)
+    {
+        nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
+        if(j==(how_many-1))
+        {
+            NRF24XX_DEBUG_PRINT("last encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest);
+            nrf24_encode_message(msg_to_send, ownaddress, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest, 0);
+        }
+        else
+        {
+            NRF24XX_DEBUG_PRINT("encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN);
+            nrf24_encode_message(msg_to_send, ownaddress, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN, 0);
+        }
+        nrf24_send_message(nrf24, msg_to_send->raw, NRF24_PAYLOAD_LEN);
+        nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS/2);
+    }
 }
 
 static uint16_t nrf24_prepare_and_receive(nrf24xx_t *nrf24, nrf24xx_msg_union_t *msg_to_send, uint8_t *buf_rx, uint8_t buf_size, uint8_t blocking_wait)
 {
-	uint8_t retries = 0;
-	uint8_t j = 0;
-	uint8_t how_many = 0;
-	uint8_t buf_rx_max_packets = 0;
+    uint8_t retries = 0;
+    uint8_t j = 0;
+    uint8_t how_many = 0;
+    uint8_t buf_rx_max_packets = 0;
 
-	how_many = msg_to_send->msg.msg_id;
-	buf_rx_max_packets = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
-	if(!(buf_size%NRF24_BUFFER_PAYLOAD_LEN))
-	{
-		buf_rx_max_packets--;
-	}
+    how_many = msg_to_send->msg.msg_id;
+    buf_rx_max_packets = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
+    if(!(buf_size%NRF24_BUFFER_PAYLOAD_LEN))
+    {
+        buf_rx_max_packets--;
+    }
 
     for(j=0;j<how_many;j++)
     {
         nrf24_power_up_rx(nrf24);
-		while(1)
-		{
-			if(nrf24_data_ready(nrf24))
-			{
-				/* Get the address */
-				//nrf24_clear_irqs(nrf24l01);
-				nrf24_get_data(nrf24, msg_to_send->raw);
+        while(1)
+        {
+            if(nrf24_data_ready(nrf24))
+            {
+                /* Get the address */
+                //nrf24_clear_irqs(nrf24l01);
+                nrf24_get_data(nrf24, msg_to_send->raw);
 
-				if(buf_rx_max_packets)
-				{
-					buf_rx_max_packets--;
-					memcpy(&buf_rx[j*NRF24_BUFFER_PAYLOAD_LEN],
-							msg_to_send->msg.msg_buffer,
-							((buf_size > msg_to_send->msg.payload_size) ? msg_to_send->msg.payload_size : buf_size));
-					NRF24XX_DEBUG_PRINT("y\n\r");
-				}
-				else
-				{
-					NRF24XX_DEBUG_PRINT("n\n\r");
-				}
-				//print_message_info(&msg_to_send);
-				break;
-			}
-			if(!blocking_wait)
-			{
-				if(retries == NRF24_MAX_RETRIES)
-					return NRF24_MESSAGE_LOST ;
-				nrf24->NRF24XX_delay_func(20);
-				retries++;
-			}
-		}
+                if(buf_rx_max_packets)
+                {
+                    buf_rx_max_packets--;
+                    memcpy(&buf_rx[j*NRF24_BUFFER_PAYLOAD_LEN],
+                            msg_to_send->msg.msg_buffer,
+                            ((buf_size > msg_to_send->msg.payload_size) ? msg_to_send->msg.payload_size : buf_size));
+                    NRF24XX_DEBUG_PRINT("y\n\r");
+                }
+                else
+                {
+                    NRF24XX_DEBUG_PRINT("n\n\r");
+                }
+                //print_message_info(&msg_to_send);
+                break;
+            }
+            if(!blocking_wait)
+            {
+                if(retries == NRF24_MAX_RETRIES)
+                    return NRF24_MESSAGE_LOST ;
+                nrf24->NRF24XX_delay_func(20);
+                retries++;
+            }
+        }
     }
 
     return NRF24_TRANSMISSON_OK;
@@ -453,121 +454,121 @@ static uint16_t nrf24_prepare_and_receive(nrf24xx_t *nrf24, nrf24xx_msg_union_t 
 
 uint8_t nrf24_master_ping_pong(nrf24xx_t *nrf24, uint8_t *rxaddress, uint8_t *buf_tx, uint8_t *buf_rx, uint8_t buf_size, uint8_t rx_req)
 {
-	uint8_t retries = 0;
-	uint8_t how_many = 0;
-	nrf24xx_msg_union_t msg_to_send;
+    uint8_t retries = 0;
+    uint8_t how_many = 0;
+    nrf24xx_msg_union_t msg_to_send;
 
-	if(!rx_req)
-	{
-		nrf24_prepare_and_send(nrf24, rxaddress, &msg_to_send, buf_tx, buf_size);
-	}
-	else
-	{
-		NRF24XX_DEBUG_PRINT("bufsize: %d how_many: %d\n", buf_size, how_many);
+    if(!rx_req)
+    {
+        nrf24_prepare_and_send(nrf24, rxaddress, &msg_to_send, buf_tx, buf_size);
+    }
+    else
+    {
+        NRF24XX_DEBUG_PRINT("bufsize: %d how_many: %d\n", buf_size, how_many);
 
-		nrf24_encode_message(&msg_to_send, rxaddress, how_many, NULL, 0, 1);
+        nrf24_encode_message(&msg_to_send, rxaddress, how_many, NULL, 0, 1);
 
-		nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
-		nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
+        nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
+        nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
 
-		/* Get some control information */
-	    nrf24_power_up_rx(nrf24);
-	    while(1)
-		{
-			if(nrf24_data_ready(nrf24))
-			{
-				//nrf24_clear_irqs(nrf24l01);
-				nrf24_get_data(nrf24, msg_to_send.raw);
-				print_message_info(&msg_to_send);
-				break;
-			}
-	    	if(retries == NRF24_MAX_RETRIES)
-	    		return NRF24_MESSAGE_LOST;
-			nrf24->NRF24XX_delay_func(10);
-			retries++;
-		}
+        /* Get some control information */
+        nrf24_power_up_rx(nrf24);
+        while(1)
+        {
+            if(nrf24_data_ready(nrf24))
+            {
+                //nrf24_clear_irqs(nrf24l01);
+                nrf24_get_data(nrf24, msg_to_send.raw);
+                print_message_info(&msg_to_send);
+                break;
+            }
+            if(retries == NRF24_MAX_RETRIES)
+                return NRF24_MESSAGE_LOST;
+            nrf24->NRF24XX_delay_func(10);
+            retries++;
+        }
 
-		nrf24_prepare_and_receive(nrf24, &msg_to_send, buf_rx, buf_size, 0);
-	}
+        nrf24_prepare_and_receive(nrf24, &msg_to_send, buf_rx, buf_size, 0);
+    }
 
-	return NRF24_TRANSMISSON_OK;
+    return NRF24_TRANSMISSON_OK;
 }
 
 uint8_t nrf24_slave_ping_pong(nrf24xx_t *nrf24, uint8_t *rx_address, uint8_t *buf_tx, uint8_t *buf_rx, uint8_t buf_size)
 {
-	uint8_t j = 0;
-	nrf24xx_msg_union_t msg_to_send;
-	uint8_t how_many = 0;
-	uint8_t rx_req = 0;
-	uint8_t rest = 0;
-	uint8_t payload_rx_message = 0;
+    uint8_t j = 0;
+    nrf24xx_msg_union_t msg_to_send;
+    uint8_t how_many = 0;
+    uint8_t rx_req = 0;
+    uint8_t rest = 0;
+    uint8_t payload_rx_message = 0;
 
-	/* Get some control information */
+    /* Get some control information */
     nrf24_power_up_rx(nrf24);
     while(1)
-	{
-		if(nrf24_data_ready(nrf24))
-		{
-			//nrf24_clear_irqs(nrf24l01);
-			nrf24_get_data(nrf24, msg_to_send.raw);
-			print_message_info(&msg_to_send);
-			payload_rx_message = msg_to_send.msg.payload_size;
-			break;
-		}
-	}
+    {
+        if(nrf24_data_ready(nrf24))
+        {
+            //nrf24_clear_irqs(nrf24l01);
+            nrf24_get_data(nrf24, msg_to_send.raw);
+            print_message_info(&msg_to_send);
+            payload_rx_message = msg_to_send.msg.payload_size;
+            break;
+        }
+    }
 
-	nrf24_tx_address(nrf24, msg_to_send.msg.addr_from);
+    nrf24_tx_address(nrf24, msg_to_send.msg.addr_from);
 
-	rx_req = msg_to_send.msg.rx_req;
+    rx_req = msg_to_send.msg.rx_req;
 
-	if(!rx_req)
-	{
-		nrf24_prepare_and_receive(nrf24, &msg_to_send, buf_rx, buf_size, 1);
-	}
-	else
-	{
-		//FIXME: This produces a strange compiler error when using avr-gcc version 4.8.1: should be uncommented
-		//nrf24_prepare_and_send(nrf24, rx_address, &msg_to_send, buf_tx, buf_size);
+    if(!rx_req)
+    {
+        nrf24_prepare_and_receive(nrf24, &msg_to_send, buf_rx, buf_size, 1);
+    }
+    else
+    {
+        //FIXME: This produces a strange compiler error when using avr-gcc version 4.8.1: should be uncommented
+        //nrf24_prepare_and_send(nrf24, rx_address, &msg_to_send, buf_tx, buf_size);
 
-		/* packetize the buffer */
-		how_many = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
+        /* packetize the buffer */
+        how_many = (buf_size/NRF24_BUFFER_PAYLOAD_LEN)+1;
 
-		if(buf_size>=NRF24_BUFFER_PAYLOAD_LEN)
-		{
-			rest = buf_size%NRF24_BUFFER_PAYLOAD_LEN;
-			if(!rest)
-			{
-				rest=NRF24_BUFFER_PAYLOAD_LEN;
-				how_many--;
-			}
-		}
-		else
-		{
-			rest = buf_size;
-		}
+        if(buf_size>=NRF24_BUFFER_PAYLOAD_LEN)
+        {
+            rest = buf_size%NRF24_BUFFER_PAYLOAD_LEN;
+            if(!rest)
+            {
+                rest=NRF24_BUFFER_PAYLOAD_LEN;
+                how_many--;
+            }
+        }
+        else
+        {
+            rest = buf_size;
+        }
 
-		nrf24_encode_message(&msg_to_send, rx_address, how_many, NULL, 0, rx_req);
+        nrf24_encode_message(&msg_to_send, rx_address, how_many, NULL, 0, rx_req);
 
-		nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
-		nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
+        nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
+        nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
 
-		for(j=0;j<how_many;j++)
-		{
-			nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
-			if(j==(how_many-1))
-			{
-				NRF24XX_DEBUG_PRINT("last encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest);
-				nrf24_encode_message(&msg_to_send, rx_address, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest, rx_req);
-			}
-			else
-			{
-				NRF24XX_DEBUG_PRINT("encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN);
-				nrf24_encode_message(&msg_to_send, rx_address, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN, rx_req);
-			}
-			nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
-			nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS/2);
-		}
-	}
+        for(j=0;j<how_many;j++)
+        {
+            nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS);
+            if(j==(how_many-1))
+            {
+                NRF24XX_DEBUG_PRINT("last encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest);
+                nrf24_encode_message(&msg_to_send, rx_address, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], rest, rx_req);
+            }
+            else
+            {
+                NRF24XX_DEBUG_PRINT("encoding: %s with size %d\n", &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN);
+                nrf24_encode_message(&msg_to_send, rx_address, j, &buf_tx[j*NRF24_BUFFER_PAYLOAD_LEN], NRF24_BUFFER_PAYLOAD_LEN, rx_req);
+            }
+            nrf24_send_message(nrf24, msg_to_send.raw, NRF24_PAYLOAD_LEN);
+            nrf24->NRF24XX_delay_func(NRF24_SEND_DELAY_MS/2);
+        }
+    }
 
     return payload_rx_message;
 }
