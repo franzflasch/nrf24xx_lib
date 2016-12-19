@@ -29,14 +29,6 @@
 
 #include <stdint.h>
 
-#ifdef __SDCC
-#define REENTRANT __reentrant
-/* not supported by sdcc so use uin32_t instead, hopefully the compiler is clever enough to warn */
-#define uint64_t uint32_t
-#elif __GNUC__
-#define REENTRANT
-#endif
-
 /* LOWLEVEL */
 #define NRF24_TRANSMISSON_OK  0
 #define NRF24_MESSAGE_LOST    1
@@ -85,14 +77,14 @@ typedef struct nrf24xx_s
    uint8_t spi_msg[NRF24_SPI_MSG_MAX_LEN+1];
 
    /* Function pointers to the corresponding SPI driver layer */
-   uint8_t (*SPI_transfer_byte)(void *spi, uint8_t val) REENTRANT;
-   void (*SPI_transfer_msg)(void *spi, uint8_t *data_out, uint8_t *data_in, uint16_t len) REENTRANT;
+   uint8_t (*SPI_transfer_byte)(void *spi, uint8_t val);
+   void (*SPI_transfer_msg)(void *spi, uint8_t *data_out, uint8_t *data_in, uint16_t len);
 
    /* Hardware specific */
-   void (*NRF24XX_set_ce)(uint8_t val) REENTRANT;
+   void (*NRF24XX_set_ce)(uint8_t val);
 
    /* Software layer specific */
-   void (*NRF24XX_delay_func)(uint64_t val) REENTRANT;
+   void (*NRF24XX_delay_func)(uint32_t val);
 
    /* execution time infos */
    uint8_t payload_len;
