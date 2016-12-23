@@ -18,6 +18,19 @@
 
 #define NRF24_SEND_DELAY_MS 300
 
+/* It seems that all string functions in sdcc do not work properly so we use our own function */
+static void local_memcpy(void *dest, void *src, size_t n)
+{
+    int i = 0;
+   // Typecast src and dest addresses to (char *)
+   uint8_t *csrc = (uint8_t *)src;
+   uint8_t *cdest = (uint8_t *)dest;
+ 
+   // Copy contents of src[] to dest[]
+   for (i=0; i<n; i++)
+       cdest[i] = csrc[i];
+}
+
 /* PRIVATE */
 static uint8_t nrf24_transfer_spi_byte(nrf24xx_t *nrf24, uint8_t val)
 {
@@ -52,7 +65,7 @@ static void nrf24_write_register_burst(nrf24xx_t *nrf24, uint8_t reg, uint8_t *v
     nrf24->spi_msg[0] = (NRF24_W_REGISTER | (NRF24_REGISTER_MASK & reg));
 
     /* copy the message to the spi msg buffer */
-    memcpy(&nrf24->spi_msg[1], value, len);
+    local_memcpy(&nrf24->spi_msg[1], value, len);
     nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, len+1);
 }
 
@@ -191,7 +204,7 @@ void nrf24_get_data(nrf24xx_t *nrf24, uint8_t* data)
     memset(&nrf24->spi_msg[1], 0xff, nrf24->payload_len);
     nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, nrf24->payload_len+1);
 
-    memcpy(data, &nrf24->spi_msg[1], nrf24->payload_len);
+    local_memcpy(data, &nrf24->spi_msg[1], nrf24->payload_len);
 
     /* Reset status register */
     nrf24_write_register(nrf24, NRF24_STATUS, (1<<NRF24_RX_DR));
@@ -216,7 +229,7 @@ void nrf24_send(nrf24xx_t *nrf24, uint8_t* value)
     nrf24->spi_msg[0] = NRF24_W_TX_PAYLOAD;
 
     /* copy the message to the spi msg buffer */
-    memcpy(&nrf24->spi_msg[1], value, nrf24->payload_len);
+    local_memcpy(&nrf24->spi_msg[1], value, nrf24->payload_len);
     nrf24_transfer_spi(nrf24, nrf24->spi_msg, NULL, nrf24->payload_len+1);
 
     /* Start the transmission */
@@ -282,7 +295,7 @@ uint8_t nrf24_send_message(nrf24xx_t *nrf24, uint8_t *buf, uint8_t buf_size)
     uint8_t temp;
     uint8_t message[NRF24_PAYLOAD_LEN];
 
-    memcpy(message, buf, buf_size);
+    local_memcpy(message, buf, buf_size);
 
     /* Automatically goes to TX mode */
     nrf24_send(nrf24, message);
@@ -317,10 +330,10 @@ uint8_t nrf24_send_message(nrf24xx_t *nrf24, uint8_t *buf, uint8_t buf_size)
 static void nrf24_encode_message(nrf24xx_msg_union_t *msg_to_send, uint8_t *rxaddress, uint8_t msg_id, uint8_t *buf, uint8_t buf_size, uint8_t rx_req)
 {
     /* Encode message */
-    memcpy(msg_to_send->msg.addr_from, rxaddress, NRF24_ADDR_LEN);
+    local_memcpy(msg_to_send->msg.addr_from, rxaddress, NRF24_ADDR_LEN);
 
     if(buf != NULL)
-        memcpy(msg_to_send->msg.msg_buffer, buf, ((buf_size > NRF24_BUFFER_PAYLOAD_LEN) ? NRF24_BUFFER_PAYLOAD_LEN : buf_size));
+        local_memcpy(msg_to_send->msg.msg_buffer, buf, ((buf_size > NRF24_BUFFER_PAYLOAD_LEN) ? NRF24_BUFFER_PAYLOAD_LEN : buf_size));
 
     msg_to_send->msg.payload_size = buf_size;
     msg_to_send->msg.msg_id = msg_id;
@@ -427,7 +440,7 @@ static uint16_t nrf24_prepare_and_receive(nrf24xx_t *nrf24, nrf24xx_msg_union_t 
                 if(buf_rx_max_packets)
                 {
                     buf_rx_max_packets--;
-                    memcpy(&buf_rx[j*NRF24_BUFFER_PAYLOAD_LEN],
+                    local_memcpy(&buf_rx[j*NRF24_BUFFER_PAYLOAD_LEN],
                             msg_to_send->msg.msg_buffer,
                             ((buf_size > msg_to_send->msg.payload_size) ? msg_to_send->msg.payload_size : buf_size));
                     NRF24XX_DEBUG_PRINT("y\n\r");
