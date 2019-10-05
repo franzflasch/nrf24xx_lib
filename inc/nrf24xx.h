@@ -125,17 +125,4 @@ uint8_t nrf24_last_message_status(nrf24xx_t *nrf24);
 
 void nrf24_clear_irqs(nrf24xx_t *nrf24);
 
-uint8_t nrf24_master_ping_pong(nrf24xx_t *nrf24, 
-                               uint8_t *rxaddress, 
-                               uint8_t *buf_tx, 
-                               uint8_t *buf_rx, 
-                               uint8_t buf_size, 
-                               uint8_t rx_req);
-
-uint8_t nrf24_slave_ping_pong(nrf24xx_t *nrf24, 
-                              uint8_t *rx_address, 
-                              uint8_t *buf_tx, 
-                              uint8_t *buf_rx, 
-                              uint8_t buf_size);
-
 #endif
