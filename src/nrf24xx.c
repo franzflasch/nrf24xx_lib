@@ -126,7 +126,7 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_CONFIG, nrf24_CONFIG);
 
     // Auto Acknowledgment
-    // nrf24_write_register(nrf24, NRF24_EN_AA,(1<<NRF24_ENAA_P0)|(1<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
+    nrf24_write_register(nrf24, NRF24_EN_AA,(1<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
 
     // Enable RX addresses
     nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(0<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
