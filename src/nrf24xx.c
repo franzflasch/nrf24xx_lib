@@ -112,8 +112,8 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_RF_CH, channel);
 
     // Set length of incoming payload
-    nrf24_write_register(nrf24, NRF24_RX_PW_P0, pay_length); // Auto-ACK pipe ...
-    nrf24_write_register(nrf24, NRF24_RX_PW_P1, 0x00); // Data payload pipe
+    nrf24_write_register(nrf24, NRF24_RX_PW_P0, 0x00); // Auto-ACK pipe ...
+    nrf24_write_register(nrf24, NRF24_RX_PW_P1, pay_length); // Data payload pipe
     nrf24_write_register(nrf24, NRF24_RX_PW_P2, 0x00); // Pipe not used
     nrf24_write_register(nrf24, NRF24_RX_PW_P3, 0x00); // Pipe not used
     nrf24_write_register(nrf24, NRF24_RX_PW_P4, 0x00); // Pipe not used
@@ -126,10 +126,10 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_CONFIG, nrf24_CONFIG);
 
     // Auto Acknowledgment
-    nrf24_write_register(nrf24, NRF24_EN_AA,(1<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
+    nrf24_write_register(nrf24, NRF24_EN_AA,(0<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
 
     // Enable RX addresses
-    nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(0<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
+    nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(1<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
 
     // Auto retransmit delay: 1000 us and Up to 15 retransmit trials
     nrf24_write_register(nrf24, NRF24_SETUP_RETR, (0x04<<NRF24_ARD) | (0x0F<<NRF24_ARC));
@@ -167,7 +167,7 @@ void nrf24_power_down(nrf24xx_t *nrf24)
 void nrf24_rx_address(nrf24xx_t *nrf24, uint8_t *adr)
 {
     nrf24->NRF24XX_set_ce(NRF24_LOW);
-    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr, NRF24_ADDR_LEN);
+    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P1, adr, NRF24_ADDR_LEN);
     nrf24->NRF24XX_set_ce(NRF24_HIGH);
 }
 
