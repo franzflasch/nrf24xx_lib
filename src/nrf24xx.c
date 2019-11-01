@@ -14,7 +14,7 @@
 #define NRF24_LOW 0
 #define NRF24_HIGH 1
 
-#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (1<<NRF24_CRCO))
+#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (0<<NRF24_CRCO))
 
 #define NRF24_SEND_DELAY_MS 300
 
@@ -112,24 +112,24 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_RF_CH, channel);
 
     // Set length of incoming payload
-    nrf24_write_register(nrf24, NRF24_RX_PW_P0, 0x00); // Auto-ACK pipe ...
-    nrf24_write_register(nrf24, NRF24_RX_PW_P1, pay_length); // Data payload pipe
+    nrf24_write_register(nrf24, NRF24_RX_PW_P0, pay_length); // Auto-ACK pipe ...
+    nrf24_write_register(nrf24, NRF24_RX_PW_P1, 0x00); // Data payload pipe
     nrf24_write_register(nrf24, NRF24_RX_PW_P2, 0x00); // Pipe not used
     nrf24_write_register(nrf24, NRF24_RX_PW_P3, 0x00); // Pipe not used
     nrf24_write_register(nrf24, NRF24_RX_PW_P4, 0x00); // Pipe not used
     nrf24_write_register(nrf24, NRF24_RX_PW_P5, 0x00); // Pipe not used
 
     // 250 kbps, TX gain: 0dbm
-    nrf24_write_register(nrf24, NRF24_RF_SETUP, (0<<NRF24_RF_DR_LOW) | (1<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
+    nrf24_write_register(nrf24, NRF24_RF_SETUP, (1<<NRF24_RF_DR_LOW) | (0<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
 
     // CRC enable, 1 byte CRC length
     nrf24_write_register(nrf24, NRF24_CONFIG, nrf24_CONFIG);
 
     // Auto Acknowledgment
-    nrf24_write_register(nrf24, NRF24_EN_AA,(1<<NRF24_ENAA_P0)|(1<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
+    nrf24_write_register(nrf24, NRF24_EN_AA,(0<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
 
     // Enable RX addresses
-    nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(1<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
+    nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(0<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
 
     // Auto retransmit delay: 1000 us and Up to 15 retransmit trials
     nrf24_write_register(nrf24, NRF24_SETUP_RETR, (0x04<<NRF24_ARD) | (0x0F<<NRF24_ARC));
@@ -167,7 +167,7 @@ void nrf24_power_down(nrf24xx_t *nrf24)
 void nrf24_rx_address(nrf24xx_t *nrf24, uint8_t *adr)
 {
     nrf24->NRF24XX_set_ce(NRF24_LOW);
-    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P1, adr, NRF24_ADDR_LEN);
+    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr, NRF24_ADDR_LEN);
     nrf24->NRF24XX_set_ce(NRF24_HIGH);
 }
 
@@ -175,7 +175,7 @@ void nrf24_rx_address(nrf24xx_t *nrf24, uint8_t *adr)
 void nrf24_tx_address(nrf24xx_t *nrf24, uint8_t *adr)
 {
     /* RX_ADDR_P0 must be set to the sending addr for auto ack to work. */
-    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr,NRF24_ADDR_LEN);
+    //nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr,NRF24_ADDR_LEN);
     nrf24_write_register_burst(nrf24, NRF24_TX_ADDR, adr, NRF24_ADDR_LEN);
 }
 
