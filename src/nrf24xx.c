@@ -14,7 +14,7 @@
 #define NRF24_LOW 0
 #define NRF24_HIGH 1
 
-#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (0<<NRF24_CRCO))
+#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (1<<NRF24_CRCO))
 
 #define NRF24_SEND_DELAY_MS 300
 
