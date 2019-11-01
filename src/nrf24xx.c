@@ -167,7 +167,7 @@ void nrf24_power_down(nrf24xx_t *nrf24)
 void nrf24_rx_address(nrf24xx_t *nrf24, uint8_t *adr)
 {
     nrf24->NRF24XX_set_ce(NRF24_LOW);
-    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr, NRF24_ADDR_LEN);
+    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P1, adr, NRF24_ADDR_LEN);
     nrf24->NRF24XX_set_ce(NRF24_HIGH);
 }
 
