@@ -14,7 +14,7 @@
 #define NRF24_LOW 0
 #define NRF24_HIGH 1
 
-#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (0<<NRF24_CRCO))
+#define nrf24_CONFIG ((1<<NRF24_EN_CRC) | (1<<NRF24_CRCO))
 
 #define NRF24_SEND_DELAY_MS 300
 
@@ -120,13 +120,13 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_RX_PW_P5, 0x00); // Pipe not used
 
     // 250 kbps, TX gain: 0dbm
-    nrf24_write_register(nrf24, NRF24_RF_SETUP, (1<<NRF24_RF_DR_LOW) | (0<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
+    nrf24_write_register(nrf24, NRF24_RF_SETUP, (0<<NRF24_RF_DR_LOW) | (1<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
 
     // CRC enable, 1 byte CRC length
     nrf24_write_register(nrf24, NRF24_CONFIG, nrf24_CONFIG);
 
     // Auto Acknowledgment
-    nrf24_write_register(nrf24, NRF24_EN_AA,(0<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
+    nrf24_write_register(nrf24, NRF24_EN_AA,(1<<NRF24_ENAA_P0)|(0<<NRF24_ENAA_P1)|(0<<NRF24_ENAA_P2)|(0<<NRF24_ENAA_P3)|(0<<NRF24_ENAA_P4)|(0<<NRF24_ENAA_P5));
 
     // Enable RX addresses
     nrf24_write_register(nrf24, NRF24_EN_RXADDR,(1<<NRF24_ERX_P0)|(0<<NRF24_ERX_P1)|(0<<NRF24_ERX_P2)|(0<<NRF24_ERX_P3)|(0<<NRF24_ERX_P4)|(0<<NRF24_ERX_P5));
@@ -135,7 +135,7 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_SETUP_RETR, (0x04<<NRF24_ARD) | (0x0F<<NRF24_ARC));
 
     // Dynamic length configurations: No dynamic length
-    nrf24_write_register(nrf24, NRF24_DYNPD,(0<<NRF24_DPL_P0)|(0<<NRF24_DPL_P1)|(0<<NRF24_DPL_P2)|(0<<NRF24_DPL_P3)|(0<<NRF24_DPL_P4)|(0<<NRF24_DPL_P5));
+    nrf24_write_register(nrf24, NRF24_DYNPD,(1<<NRF24_DPL_P0)|(0<<NRF24_DPL_P1)|(0<<NRF24_DPL_P2)|(0<<NRF24_DPL_P3)|(0<<NRF24_DPL_P4)|(0<<NRF24_DPL_P5));
 
     // Start listening
     nrf24_power_up_rx(nrf24);
