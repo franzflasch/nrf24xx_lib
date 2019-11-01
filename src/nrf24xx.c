@@ -120,7 +120,7 @@ void nrf24_config(nrf24xx_t *nrf24, uint8_t channel, uint8_t pay_length)
     nrf24_write_register(nrf24, NRF24_RX_PW_P5, 0x00); // Pipe not used
 
     // 250 kbps, TX gain: 0dbm
-    nrf24_write_register(nrf24, NRF24_RF_SETUP, (0<<NRF24_RF_DR_LOW) | (1<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
+    nrf24_write_register(nrf24, NRF24_RF_SETUP, (0<<NRF24_RF_DR_LOW) | (0<<NRF24_RF_DR) | (0x03<<NRF24_RF_PWR));
 
     // CRC enable, 1 byte CRC length
     nrf24_write_register(nrf24, NRF24_CONFIG, nrf24_CONFIG);
