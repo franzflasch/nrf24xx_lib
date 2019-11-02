@@ -175,7 +175,7 @@ void nrf24_rx_address(nrf24xx_t *nrf24, uint8_t *adr)
 void nrf24_tx_address(nrf24xx_t *nrf24, uint8_t *adr)
 {
     /* RX_ADDR_P0 must be set to the sending addr for auto ack to work. */
-    //nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr,NRF24_ADDR_LEN);
+    nrf24_write_register_burst(nrf24, NRF24_RX_ADDR_P0, adr, NRF24_ADDR_LEN);
     nrf24_write_register_burst(nrf24, NRF24_TX_ADDR, adr, NRF24_ADDR_LEN);
 }
 
