@@ -52,7 +52,7 @@ static void nrf24_write_register(nrf24xx_t *nrf24, uint8_t reg, uint8_t value)
 }
 
 /* Read single register from nrf24 */
-static uint8_t nrf24_read_register_byte(nrf24xx_t *nrf24, uint8_t reg)
+uint8_t nrf24_read_register_byte(nrf24xx_t *nrf24, uint8_t reg)
 {
     nrf24->spi_msg[0] = (NRF24_R_REGISTER | (NRF24_REGISTER_MASK & reg));
     nrf24_transfer_spi(nrf24, nrf24->spi_msg, nrf24->spi_msg, 2);

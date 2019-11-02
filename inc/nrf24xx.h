@@ -92,6 +92,8 @@ typedef struct nrf24xx_s
 
 }nrf24xx_t;
 
+uint8_t nrf24_read_register_byte(nrf24xx_t *nrf24, uint8_t reg);
+
 void nrf24_drv_init(nrf24xx_t *nrf24,
           void *nrf24_spi,
           void *spi_transfer_byte,
